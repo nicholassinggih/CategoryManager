@@ -1,0 +1,207 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Category Manager</title>
+	<meta charset="utf-8" />
+    <link rel="stylesheet" href="Content/bootstrap.min.css" />
+    <script type="text/javascript" src="Scripts/jquery-1.8.2.js"></script>
+    <script type="text/javascript" src="Scripts/underscore.js"></script>
+    <script type="text/javascript" src="Scripts/backbone.js"></script>
+    
+
+</head>
+<body>
+    <div class="container">
+        <h1>Category Manager</h1>
+        <hr />
+        <div class="content"></div>
+    </div>
+
+    <script type="text/template" id="edit-category-template">
+        <form class="edit-template-form">
+            <legend><%= cat ? 'Edit' : 'Create' %> Category</legend>
+            <label>Name</label>
+            <input type="text" name="name" value="<%= cat ? cat.Name : '' %>" />
+            <label>Parent Category</label>
+            <select name="parentId">
+                <option value="">Please Select</option>
+                <%= parentOptions %>
+            </select>
+            <hr />
+            <% if (cat) { %>
+            <input type="hidden" name="id" value="<%= cat.id %>" />
+            <% } %>
+            <button type="submit" class="btn" id="save-category-btn">Save</button>
+            <button type="button" class="btn" id="cancel-edit-btn">Cancel</button>
+        </form>
+    </script>
+
+    <script type="text/template" id="parent-options-template">
+        <% _.each(cats, function(cat) { %>
+        <option value="<%= cat.Id %>" <%= cat.Id == parentId? 'selected="selected"' : '' %>><%= cat.Name %></option>
+        <% }); %>        
+    </script>
+    
+    <script type="text/template" id="category-listing-template">
+        <ul>
+            <% _.each(cats, function(cat) { %>
+            <li>
+                <%= cat.Name %>
+                <a href="#/edit/<%= cat.Id %>" class="navbar-link">[Edit]</a>
+                <% 
+                    var children = cat.Children;
+                    if (children && children.length > 0) { %>
+                        <%= renderChildren({cats: children, renderChildren: renderChildren}) %>
+                <% } else { %>
+                    <a href="#/delete/<%= cat.Id %>" class="navbar-link">[Delete]</a>
+                <% } %>
+            </li>
+            <% }); %>
+            
+        </ul>
+    </script>    
+
+    <script type="text/template" id="category-main-template">
+        <a href="#/new" id="btn-new-category" class="btn btn-primary">New Category</a>
+        <%= renderChildren({cats: cats, renderChildren: renderChildren}) %>
+    </script>
+
+    <script type="text/javascript">
+        $.fn.serializeObject = function () {
+            var o = {};
+            var a = this.serializeArray();
+            $.each(a, function () {
+                if (o[this.name] !== undefined) {
+                    if (!o[this.name].push) {
+                        o[this.name] = [o[this.name]];
+                    }
+                    o[this.name].push(this.value || '');
+                } else {
+                    o[this.name] = this.value || '';
+                }
+            })
+            return o;
+
+        }
+        var myCategories = Backbone.Collection.extend({
+            url: '/api/category'
+        });
+
+        var myCategory = Backbone.Model.extend({
+            urlRoot: '/api/category'
+        });
+
+        var editCategory = Backbone.View.extend({
+            el: '.content',
+            render: function (options) {
+                var that = this;
+                var renderEdit = function (cat) {
+
+                    var others = new myCategories();
+                    var parentOptions = "";
+                    var catId = cat ? cat.Id : 0;
+                    var parentId = cat ? cat.ParentId : 0;
+                    others.fetch({
+                        url: '/api/category/othersExcludingChildren/' + catId,
+                        success: function (categories) {
+                            var catList = [];
+                            $.each(categories.models, function () {
+                                catList.push(this.toJSON());
+                            });
+                            var parentOptions = _.template($("#parent-options-template").html())({ cats: catList, parentId: parentId });
+                            var template = _.template($('#edit-category-template').html())({ cat: cat ? cat : null, parentOptions: parentOptions });
+                            that.$el.html(template);
+                        }
+                    });
+                    
+                    
+                }
+                if (options && options.id) {
+                    var cat = new myCategory({ id: options.id });
+                    cat.fetch({
+                        success: function (cat) {
+                            renderEdit(cat.toJSON());
+                        }
+                    });
+                } else {
+                    renderEdit(null);
+                }
+            },
+            events: {
+                'submit .edit-template-form': 'saveCategory',
+                'click #cancel-edit-btn': 'displayMain'
+            },
+            saveCategory: function(ev) {
+                var categoryDetails = $(ev.currentTarget).serializeObject();
+                var category = new myCategory();
+                category.save(categoryDetails, {
+                    success: function() {
+                        router.navigate('', {trigger: true});
+                    }
+                });
+                console.log(categoryDetails);
+                return false;
+            },
+            displayMain: function(ev) {
+                router.navigate('', { trigger: true });
+            }
+        })
+
+        var categoryListing = Backbone.View.extend({
+            el: '.content',
+            render: function () {
+                var that = this;
+                var categories = new myCategories();
+                categories.fetch({
+                    success: function (categories) {
+                        var catList = [];
+                        $.each(categories.models, function () {
+                            catList.push(this.toJSON());
+                        });
+                        var renderChildren = _.template($("#category-listing-template").html());
+                        var template = _.template($("#category-main-template").html())({ cats: catList, renderChildren: renderChildren });
+                        that.$el.html(template);
+                    }
+                });
+            }
+        });
+
+        var categoryListingView = new categoryListing();
+        var editCategoryView = new editCategory();
+        var myRouter = Backbone.Router.extend({
+            routes: {
+                '': 'home',
+                'new': 'editCategory',
+                'edit/:id': 'editCategory',
+                'delete/:id': 'deleteCategory'
+            }
+        });
+
+
+        var router = new myRouter();
+        router.on('route:home', function () {
+            categoryListingView.render();
+        });
+        router.on('route:editCategory', function (id) {
+            editCategoryView.render({ id: id });
+        })
+        router.on('route:deleteCategory', function (id) {
+            if (confirm("Are you sure?")) {
+                var cat = new myCategory({ id: id });
+                cat.fetch({
+                    success: function (cat) {
+                        cat.destroy({
+                            success: function () {
+                                router.navigate('', { trigger: true });
+                            }
+                        });
+                    }
+                });
+            }
+            categoryListingView.render();
+        })
+
+        Backbone.history.start();
+    </script>
+</body>
+</html>
