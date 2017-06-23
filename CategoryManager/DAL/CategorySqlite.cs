@@ -44,7 +44,7 @@ namespace CategoryManager.DAL
 
         public void Update(Category category)
         {
-            string sql = String.Format(@"UPDATE category SET name='{0}', parent_id={1} WHERE id={2}", category.Name, category.ParentId, category.Id);
+            string sql = String.Format(new NullFormat(), @"UPDATE category SET name='{0}', parent_id={1} WHERE id={2}", category.Name, category.ParentId, category.Id);
             ExecuteNonQuery(sql);
         }
 
@@ -92,19 +92,19 @@ namespace CategoryManager.DAL
 
         public Category[] SelectAll()
         {
-            string sql = @"SELECT * FROM category";
+            string sql = @"SELECT * FROM category ORDER BY name COLLATE NOCASE ASC";
             return QueryCategory(sql).ToArray();
         }
 
         public Category SelectById(int id)
         {
-            string sql = String.Format(@"SELECT * FROM category WHERE id={0}", id);
+            string sql = String.Format(@"SELECT * FROM category WHERE id={0} ORDER BY name COLLATE NOCASE ASC", id);
             return QueryCategory(sql)[0];
         }
 
         public Category[] SelectByParentId(int parentId)
         {
-            string sql = String.Format(@"SELECT * FROM category WHERE parent_id={0}", parentId);
+            string sql = String.Format(@"SELECT * FROM category WHERE parent_id={0} ORDER BY name COLLATE NOCASE ASC", parentId);
             return QueryCategory(sql).ToArray();
         }
     }
