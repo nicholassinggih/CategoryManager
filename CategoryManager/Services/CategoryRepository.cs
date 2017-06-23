@@ -48,9 +48,12 @@ namespace CategoryManager.Services
         {
             Category[] cats = GetAllCategories();
             List<Category> catList = cats.ToList();
-            Category selected = (from cat in cats where cat.Id == id select cat).First();
-            PopulateChildren(selected, cats);
-            RemoveChildren(selected, catList);
+            Category selected = (id == 0? null : (from cat in cats where cat.Id == id select cat).FirstOrDefault());
+            if (selected != null)
+            {
+                PopulateChildren(selected, cats);
+                RemoveChildren(selected, catList);
+            }
             return catList.ToArray();
         }
         

@@ -6,17 +6,23 @@ using System.Data;
 using System.Data.SQLite;
 using CategoryManager.Models;
 using CategoryManager.Common;
+using System.Configuration;
 
 namespace CategoryManager.DAL
 {
     
     public class CategorySqlite
     {
-        const string connString = @"Data Source=|DataDirectory|\categories.db;Version=3;";
-        
+        private string connectionString { get; set; }
+
+        public CategorySqlite()
+        {
+            connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["SqliteConnectionString"].ConnectionString;
+        }
+
         private void ExecuteNonQuery(string sql)
         {
-            using (SQLiteConnection conn = new SQLiteConnection(connString))
+            using (SQLiteConnection conn = new SQLiteConnection(this.connectionString))
             {
                 try
                 {
@@ -44,6 +50,9 @@ namespace CategoryManager.DAL
 
         public void Delete(int id)
         {
+            // Before deleting a node, the children of that node must be appended to its parent (or the root node, which means no parentId) first
+            string updateSql = String.Format(@"UPDATE category SET parent_id=(SELECT parent_id FROM category WHERE id={0}) WHERE parent_id={1}", id, id);
+            ExecuteNonQuery(updateSql);
             string sql = String.Format(@"DELETE FROM category WHERE id={0}", id);
             ExecuteNonQuery(sql);
         }
@@ -51,7 +60,7 @@ namespace CategoryManager.DAL
         private List<Category> QueryCategory(string sql)
         {
             List<Category> result = new List<Category>();
-            using (SQLiteConnection conn = new SQLiteConnection(connString))
+            using (SQLiteConnection conn = new SQLiteConnection(this.connectionString))
             {
                 try
                 {
@@ -91,6 +100,12 @@ namespace CategoryManager.DAL
         {
             string sql = String.Format(@"SELECT * FROM category WHERE id={0}", id);
             return QueryCategory(sql)[0];
+        }
+
+        public Category[] SelectByParentId(int parentId)
+        {
+            string sql = String.Format(@"SELECT * FROM category WHERE parent_id={0}", parentId);
+            return QueryCategory(sql).ToArray();
         }
     }
 }
