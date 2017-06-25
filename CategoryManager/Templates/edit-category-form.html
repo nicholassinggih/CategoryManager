@@ -1,0 +1,16 @@
+﻿<form class="edit-template-form">
+    <legend><%= cat ? 'Edit' : 'Create' %> Category</legend>
+    <label>Name</label>
+    <input type="text" name="name" value="<%= cat ? cat.Name : '' %>" />
+    <label>Parent Category</label>
+    <select name="parentId">
+        <option value="">Please Select</option>
+        <%= parentOptions %>
+    </select>
+    <hr />
+    <% if (cat) { %>
+    <input type="hidden" name="id" value="<%= cat.id %>" />
+    <% } %>
+    <button type="submit" class="btn" id="save-category-btn">Save</button>
+    <button type="button" class="btn" id="cancel-edit-btn">Cancel</button>
+</form>

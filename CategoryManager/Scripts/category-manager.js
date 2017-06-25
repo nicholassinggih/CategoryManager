@@ -1,4 +1,21 @@
-﻿var myCategories = Backbone.Collection.extend({
+﻿
+
+var categoryOptionsTemplate, editCategoryTemplate, categoryListTemplate, categoryMainTemplate;
+$.get("Templates/category-main-template.html", function (data) {
+    categoryMainTemplate = _.template(data);
+});
+$.get("Templates/category-dropdown-options.html", function (data) {
+    categoryOptionsTemplate = _.template(data);
+});
+$.get("Templates/category-list-view.html", function (data) {
+    categoryListTemplate = _.template(data);
+});
+$.get("Templates/edit-category-form.html", function (data) {
+    editCategoryTemplate = _.template(data);
+});
+
+
+var myCategories = Backbone.Collection.extend({
     url: '/api/category'
 });
 
@@ -23,8 +40,8 @@ var editCategory = Backbone.View.extend({
                     $.each(categories.models, function () {
                         catList.push(this.toJSON());
                     });
-                    var parentOptions = _.template($("#parent-options-template").html())({ cats: catList, parentId: parentId });
-                    var template = _.template($('#edit-category-template').html())({ cat: cat ? cat : null, parentOptions: parentOptions });
+                    var parentOptions = categoryOptionsTemplate({ cats: catList, parentId: parentId });
+                    var template = editCategoryTemplate({ cat: cat ? cat : null, parentOptions: parentOptions });
                     that.$el.html(template);
                 }
             });
@@ -72,8 +89,8 @@ var categoryListing = Backbone.View.extend({
                 $.each(categories.models, function () {
                     catList.push(this.toJSON());
                 });
-                var renderChildren = _.template($("#category-listing-template").html());
-                var template = _.template($("#category-main-template").html())({ cats: catList, renderChildren: renderChildren });
+                var renderChildren = categoryListTemplate;
+                var template = categoryMainTemplate({ cats: catList, renderChildren: renderChildren });
                 that.$el.html(template);
             }
         });

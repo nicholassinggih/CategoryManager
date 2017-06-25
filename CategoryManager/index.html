@@ -4,10 +4,12 @@
     <title>Category Manager</title>
 	<meta charset="utf-8" />
     <link rel="stylesheet" href="Content/bootstrap.min.css" />
+    <link rel="stylesheet" href="Content/bootstrap-theme.min.css" />
     <script type="text/javascript" src="Scripts/jquery-1.8.2.js"></script>
     <script type="text/javascript" src="Scripts/underscore.js"></script>
     <script type="text/javascript" src="Scripts/backbone.js"></script>
-    
+    <script type="text/javascript" src="Scripts/backbone.treemodel.js"></script>
+    <script type="text/javascript" src="Scripts/backbone-tree-view.js"></script>
 
 </head>
 <body>
@@ -16,54 +18,6 @@
         <hr />
         <div class="content"></div>
     </div>
-
-    <script type="text/template" id="edit-category-template">
-        <form class="edit-template-form">
-            <legend><%= cat ? 'Edit' : 'Create' %> Category</legend>
-            <label>Name</label>
-            <input type="text" name="name" value="<%= cat ? cat.Name : '' %>" />
-            <label>Parent Category</label>
-            <select name="parentId">
-                <option value="">Please Select</option>
-                <%= parentOptions %>
-            </select>
-            <hr />
-            <% if (cat) { %>
-            <input type="hidden" name="id" value="<%= cat.id %>" />
-            <% } %>
-            <button type="submit" class="btn" id="save-category-btn">Save</button>
-            <button type="button" class="btn" id="cancel-edit-btn">Cancel</button>
-        </form>
-    </script>
-
-    <script type="text/template" id="parent-options-template">
-        <% _.each(cats, function(cat) { %>
-        <option value="<%= cat.Id %>" <%= cat.Id == parentId? 'selected="selected"' : '' %>><%= cat.Name %></option>
-        <% }); %>        
-    </script>
-    
-    <script type="text/template" id="category-listing-template">
-        <ul>
-            <% _.each(cats, function(cat) { %>
-            <li>
-                <%= cat.Name %>
-                <a href="#/edit/<%= cat.Id %>" class="navbar-link">[Edit]</a>
-                <a href="#/delete/<%= cat.Id %>" class="navbar-link">[Delete]</a>
-                <% 
-                    var children = cat.Children;
-                    if (children && children.length > 0) { %>
-                        <%= renderChildren({cats: children, renderChildren: renderChildren}) %>
-                <% } %>
-            </li>
-            <% }); %>
-            
-        </ul>
-    </script>    
-
-    <script type="text/template" id="category-main-template">
-        <a href="#/new" id="btn-new-category" class="btn btn-primary">New Category</a>
-        <%= renderChildren({cats: cats, renderChildren: renderChildren}) %>
-    </script>
     <script type="text/javascript" src="Scripts/common-functions.js"></script>
     <script type="text/javascript" src="Scripts/category-manager.js"></script>
 </body>

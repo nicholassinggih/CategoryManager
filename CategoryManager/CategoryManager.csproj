@@ -239,6 +239,8 @@
     <Content Include="Areas\HelpPage\HelpPage.css" />
     <Content Include="Content\bootstrap-responsive.css" />
     <Content Include="Content\bootstrap-responsive.min.css" />
+    <Content Include="Content\bootstrap-theme.css" />
+    <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="favicon.ico" />
@@ -247,6 +249,8 @@
     <Content Include="img\glyphicons-halflings.png" />
     <Content Include="index.html" />
     <Content Include="Scripts\backbone-min.js" />
+    <Content Include="Scripts\backbone-tree-view.js" />
+    <Content Include="Scripts\backbone-tree-view.min.js" />
     <Content Include="Scripts\backbone.js" />
     <Content Include="Scripts\backbone.min.js" />
     <Content Include="Areas\HelpPage\Views\Web.config" />
@@ -270,7 +274,10 @@
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
     <Content Include="App_Data\categories.db" />
     <Content Include="Scripts\backbone.min.map" />
+    <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="Content\bootstrap-theme.min.css.map" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\backbone.treemodel.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
@@ -287,6 +294,10 @@
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\underscore.js" />
     <Content Include="Scripts\underscore.min.js" />
+    <Content Include="Templates\category-dropdown-options.html" />
+    <Content Include="Templates\category-list-view.html" />
+    <Content Include="Templates\category-main-template.html" />
+    <Content Include="Templates\edit-category-form.html" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
