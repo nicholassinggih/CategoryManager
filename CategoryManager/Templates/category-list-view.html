@@ -1,0 +1,15 @@
+﻿<ul>
+    <% _.each(cats, function(cat) { %>
+    <li>
+        <%= cat.Name %>
+        <a href="#/edit/<%= cat.Id %>" class="navbar-link">[Edit]</a>
+        <a href="#/delete/<%= cat.Id %>" class="navbar-link">[Delete]</a>
+        <%
+        var children = cat.Children;
+        if (children && children.length > 0) { %>
+        <%= renderChildren({cats: children, renderChildren: renderChildren}) %>
+        <% } %>
+    </li>
+    <% }); %>
+
+</ul>

@@ -1,0 +1,3 @@
+﻿<% _.each(cats, function(cat) { %>
+    <option value="<%= cat.Id %>" <%= cat.Id == parentId? 'selected="selected"' : '' %>><%= cat.Name %></option>
+<% }); %>
