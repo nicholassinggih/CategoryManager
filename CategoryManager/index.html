@@ -4,19 +4,32 @@
     <title>Category Manager</title>
 	<meta charset="utf-8" />
     <link rel="stylesheet" href="Content/bootstrap.min.css" />
-    <link rel="stylesheet" href="Content/bootstrap-theme.min.css" />
-    <script type="text/javascript" src="Scripts/jquery-1.8.2.js"></script>
-    <script type="text/javascript" src="Scripts/underscore.js"></script>
-    <script type="text/javascript" src="Scripts/backbone.js"></script>
+    <link rel="stylesheet" href="Content/bootstrap-backtree-theme.min.css" />
+    <link rel="stylesheet" href="Content/Site.css" />
+    <script type="text/javascript" src="Scripts/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="Scripts/jquery-ui-1.12.1.min.js"></script>
+    <script type="text/javascript" src="Scripts/underscore.min.js"></script>
+    <script type="text/javascript" src="Scripts/backbone.min.js"></script>
     <script type="text/javascript" src="Scripts/backbone.treemodel.js"></script>
     <script type="text/javascript" src="Scripts/backbone-tree-view.js"></script>
+    
 
 </head>
 <body>
-    <div class="container">
+    <div class="container col-md-5 col-md-offset-3">
         <h1>Category Manager</h1>
         <hr />
+        <div class="top-menu">
+            <a href="#" class="btn btn-success btn-xs my-add-root" title="New Root Category">New Category</a>
+        </div>
         <div class="content"></div>
+    </div>
+    <div id="edit-category-div">
+        <form class="edit-category-form">
+            <input type="text" name="name" id="categoryName"/>
+            <input type="hidden" name="id" id="categoryId"/>
+            <input type="hidden" name="parentId" id="categoryParentId" />
+        </form>
     </div>
     <script type="text/javascript" src="Scripts/common-functions.js"></script>
     <script type="text/javascript" src="Scripts/category-manager.js"></script>

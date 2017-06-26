@@ -38,6 +38,9 @@ namespace CategoryManager.Services
             return others;
         }
 
+        /*
+        This method disconnects the children from a node. Does not delete the child node from the database.
+        */
         private void RemoveChildren(Category cat, List<Category> allCats)
         {
             allCats.Remove(allCats.Single(c => c.Id == cat.Id));

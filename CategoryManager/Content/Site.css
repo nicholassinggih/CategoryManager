@@ -15,3 +15,15 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.edit-template-form {
+    height: 18px;
+    min-height: 18px;
+    position: absolute;
+}
+
+#edit-category-div {
+    height: 18px;
+    min-height: 18px;
+    position: fixed;
+}
